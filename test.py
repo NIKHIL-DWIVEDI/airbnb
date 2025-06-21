@@ -1,9 +1,15 @@
 import pyairbnb
 import json
+import os
+import datetime
 
-check_in = "2026-05-15"
-check_out = "2026-05-17"
-currency = "EUR"
+
+os.makedirs("results",exist_ok=True)
+
+
+check_in = "2024-05-15"
+check_out = "2024-05-17"
+currency = "USD"
 user_input_text = "Luxembourg"
 locale = "pt"
 proxy_url = ""  # Proxy URL (if needed)
@@ -54,25 +60,10 @@ search_results = pyairbnb.search_all(
     proxy_url=proxy_url
 )
 
-# Save the search results as a JSON file
-with open('search_results1.json', 'w', encoding='utf-8') as f:
-    f.write(json.dumps(search_results))  # Convert results to JSON and write to file
+## take the current date and time for the filename
+current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+# Save the search results to a JSON file with a timestamp
+with open(f'results/search_results_{current_time}.json', 'w', encoding='utf-8') as f:
+    f.write(json.dumps(search_results, indent=4))  # Convert results to JSON and write to files
 
-room_url = "https://www.airbnb.com/rooms/51752186"  # Listing URL
-currency = "USD"  # Currency for the listing details
-check_in = "2026-05-15"
-check_out = "2026-05-17"
-# Retrieve listing details without including the price information (no check-in/check-out dates)
-data = pyairbnb.get_details(room_url=room_url, currency=currency,adults=4,check_in=check_in,check_out=check_out)
-
-# Save the retrieved details to a JSON file
-with open('details_data.json', 'w', encoding='utf-8') as f:
-    f.write(json.dumps(data))  # Convert the data to JSON and save it
-
-# Test search_all_from_url using a sample Airbnb URL with various filters
-results = pyairbnb.search_all_from_url("https://www.airbnb.com/s/Luxembourg--Luxembourg/homes?checkin=2026-05-15&checkout=2026-05-15&ne_lat=49.765370668280966&ne_lng=6.560570632398054&sw_lat=49.31155139251553&sw_lng=6.0326271739902495&zoom=10&price_min=22&price_max=100&room_types%5B%5D=Entire%20home%2Fapt&amenities%5B%5D=4&amenities%5B%5D=5", currency="USD", proxy_url="")
-
-with open('search_results_from_url.json', 'w', encoding='utf-8') as f:
-    f.write(json.dumps(results))  # Convert the data to JSON and save it
-
-print(f"Retrieved {len(results)} listings from URL search.")
+print(f"Retrieved {len(search_results)} listings from search.")

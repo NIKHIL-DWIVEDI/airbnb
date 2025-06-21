@@ -253,3 +253,28 @@ calendar_data = pyairbnb.get_calendar(room_id, "", proxy_url)
 with open('calendar.json', 'w', encoding='utf-8') as f:
     f.write(json.dumps(calendar_data))  # Extract calendar data and save it to a file
 ```
+
+
+### STEPS TO RUN THE CODE
+- Copy the repo locally
+- Now u have to connect the database 
+    - I am using postgressql here
+    - use docker to run the database
+    - docker run --name airbnb-postgres \
+  -e POSTGRES_USER=nikhil \
+  -e POSTGRES_PASSWORD=nikhil123 \
+  -e POSTGRES_DB=airbnb_db \
+  -p 5432:5432 \
+  -v airbnb_progress_data:/var/lib/postgresql/data \
+  -d postgres:latest
+   - Change the project name, username, password and the volume mount path acc to you
+- run the command python postgres_db.py , this  will create the database schema
+- run command python test.py which will store the data in json
+- for visualisation used metabase
+    - docker run -d -p 3000:3000 \
+  --name metabase \
+  -v ~/metabase-data:/metabase-data \          
+  -e "MB_DB_FILE=/metabase-data/metabase.db" \ 
+  metabase/metabase
+- read the metabase docs for further playaround
+
