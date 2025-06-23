@@ -1,7 +1,41 @@
 # Airbnb scraper in Python
 
-## Overview
-This project is an open-source tool developed in Python for extracting product information from Airbnb. It's designed to be easy to use, making it an ideal solution for developers looking for Airbnb product data.
+In extension to the above project [pybnb](https://github.com/johnbalvin/pybnb) I created PostgerSQL database and used the data to visualize and do analysis using metabase tool.
+
+![alt text](image.png)
+## STEPS TO RUN THE CODE LOCALLY
+ - Clone the current repo locally
+ - Fetch the airbnb data and store it in json format in results folder.
+```
+python test.py
+```
+NOTE: Change the parameters to fetch the required data.
+ - Create the PostgreSQL database using docker command
+ ```
+  docker run --name airbnb-postgres \
+  -e POSTGRES_USER=nikhil \
+  -e POSTGRES_PASSWORD=nikhil123 \
+  -e POSTGRES_DB=airbnb_db \
+  -p 5432:5432 \
+  -v airbnb_progress_data:/var/lib/postgresql/data \
+  -d postgres:latest
+ ```
+NOTE: Change the database name, username, password and while mounting the volumes set the path where you want to persist the data.
+
+ - To create the database schema and dump the json data in the database run the following command - 
+ ```
+    python postgres_db.py
+ ```
+ - Create metabase
+ ```
+   docker run -d -p 3000:3000 \
+  --name metabase \
+  -v ~/metabase-data:/metabase-data \          
+  -e "MB_DB_FILE=/metabase-data/metabase.db" \ 
+  metabase/metabase
+ ```
+ - To see all the features of open source metabase please refer to the official documentation [metabase](https://www.metabase.com/docs/latest/)
+
 
 ## Features
 - Extract prices, available dates, reviews, host details and others
@@ -10,21 +44,9 @@ This project is an open-source tool developed in Python for extracting product i
 - Implemented in Python just because it's popular
 - Easy to integrate with existing Python projects
 
-## Legacy
-- This was a project first implemented on:[https://github.com/johnbalvin/pybnb](https://github.com/johnbalvin/pybnb) but was moved to [https://github.com/johnbalvin/pyairbnb](https://github.com/johnbalvin/pyairbnb)
-to match the name with pip name
-
 ## Important
 - With the new airbnb changes, if you want to get the price from a room url you need to specify the date range
 the date range should be on the format year-month-day, if you leave the date range empty, you will get the details but not the price
-
-
-### Install
-
-```bash
-$ pip install pyairbnb
-```
-## Examples
 
 ### Example for Searching Listings
 
@@ -254,27 +276,6 @@ with open('calendar.json', 'w', encoding='utf-8') as f:
     f.write(json.dumps(calendar_data))  # Extract calendar data and save it to a file
 ```
 
+## Credits
 
-### STEPS TO RUN THE CODE
-- Copy the repo locally
-- Now u have to connect the database 
-    - I am using postgressql here
-    - use docker to run the database
-    - docker run --name airbnb-postgres \
-  -e POSTGRES_USER=nikhil \
-  -e POSTGRES_PASSWORD=nikhil123 \
-  -e POSTGRES_DB=airbnb_db \
-  -p 5432:5432 \
-  -v airbnb_progress_data:/var/lib/postgresql/data \
-  -d postgres:latest
-   - Change the project name, username, password and the volume mount path acc to you
-- run the command python postgres_db.py , this  will create the database schema
-- run command python test.py which will store the data in json
-- for visualisation used metabase
-    - docker run -d -p 3000:3000 \
-  --name metabase \
-  -v ~/metabase-data:/metabase-data \          
-  -e "MB_DB_FILE=/metabase-data/metabase.db" \ 
-  metabase/metabase
-- read the metabase docs for further playaround
-
+This project is originally based on [pybnb](https://github.com/johnbalvin/pybnb). Credit goes to the original author(s).
